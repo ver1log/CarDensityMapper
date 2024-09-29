@@ -1,0 +1,1 @@
+Hello everybody, this is kind of neat. This will be my project where I beging to develop a script that a user can toggle though a map and see the density of cars in that are. This can be a nice tool for people who are in detailing industry or even automotive as a whole. My looking at this map they will be able to see the location where the cars are most dense. 
