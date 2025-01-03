@@ -4,7 +4,7 @@ class ApplicationX:
     def __init__(self,theMap:DensityMap):
         self.theMap = theMap
     def startApplication(self):
-        app = Flask(__name__)
+        app = Flask(__name__, template_folder='../templates')
 
         messages = [{'title': 'Message One',
                     'content': 'Message One Content'},
