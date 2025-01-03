@@ -1,5 +1,6 @@
 import folium
 import webbrowser
+import json
 
 class DensityMap:
     # The self is like the "this"; it refers to the instance making the call
@@ -13,6 +14,7 @@ class DensityMap:
 
     def showMap(self):
         # Display the map
+        self.markArea()
         self.my_map.save(self.fileName)
         #webbrowser.open(self.fileName)
 
@@ -23,5 +25,10 @@ class DensityMap:
             popup=popUpMessage,
             icon=folium.Icon(icon="cloud"),
         ).add_to(self.my_map)
-
-
+    def markArea(self):
+        style = {'color':'grey', 
+                'weight':'1', 
+                'fillcolor':'black', 
+                'fillOpacity':.3}
+        
+        folium.GeoJson("res/us-states.json", name = "USA", style_function = lambda x: style).add_to(self.my_map)
