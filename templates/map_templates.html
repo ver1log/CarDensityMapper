@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Map</title>
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
+        #map-container { position: relative; width: 100%; height: 100%; }
+        #input-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"] {
+            width: 200px;
+            padding: 5px;
+            font-size: 14px;
+        }
+        button {
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Text Box Container -->
+    <div id="input-container">
+        <input type="text" id="user-input" placeholder="Enter zip code" minlength="5" required maxlength="5" required>
+        <button onclick="handleInput()">Submit</button>
+    </div>
+
+    <!-- Map Container -->
+    <div id="map-container">
+        {{ map_content|safe }}  <!-- Embed the map HTML here -->
+    </div>
+
+    <script>
+        // Handle user input
+        function handleInput() {
+            const inputValue = document.getElementById('user-input').value;
+            alert('You entered: ' + inputValue);
+        }
+    </script>
+</body>
+</html>
