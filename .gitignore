@@ -1,3 +1,4 @@
 # Compiled Object files
 __pycache__/
 *.vscode
+venv1/
