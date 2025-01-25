@@ -1,6 +1,6 @@
 from Map import DensityMap
 from App import ApplicationX
-from Zip import ZipHelper
+from ZipUtil import ZipHelper
 
 def main ():
     # Coordinates for the map's center

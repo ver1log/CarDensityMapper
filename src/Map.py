@@ -1,7 +1,7 @@
 import folium
 import webbrowser
 import json
-from Zip import ZipHelper
+from ZipUtil import ZipHelper
 
 class DensityMap:
     # The self is like the "this"; it refers to the instance making the call
@@ -44,18 +44,14 @@ class DensityMap:
     def render_zip_code(self, zipcode:str):
         #when rendering a zip code clear the previous area codes
         self.reset_map()
-        zc = str(zipcode)
-        x = float(zc[0:2]) 
-        y = float(zc[2:4:])
-        print(zipcode)
-        print(x)
-        print(y)
+        surface_area = self.zip_helper.get_surface_area(zipcode)
+        city_name = self.zip_helper.get_city_name(zipcode)
         number_of_vehicles = str(self.zip_helper.get_vechicle_num_from_zip(zipcode))
         #doesnt work yet, just using as a place holder
         marker = folium.Marker(
-            location=[x,y],
+            location=self.zip_helper.get_coodinates(int(zipcode)),
             tooltip="Click me!",
-            popup=str(zipcode + ", " + number_of_vehicles),
+            popup= str(zipcode) + ", " + number_of_vehicles + ", " + str(surface_area) + ", " + city_name,
             icon=folium.Icon(icon="cloud"),
             maxs_bounds=True
         )

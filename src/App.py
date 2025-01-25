@@ -36,7 +36,7 @@ class ApplicationX:
             '''
             if(self.theMap.zip_helper.is_valid_zip(str(zipcode)) == False):
                 return "Zipcode not available", 400
-            # Render the ZIP code density on the map
+            # Render the ZIP code density on the map, since it has been checked that it is valid at this point
             self.theMap.render_zip_code(zipcode)
             map_content = self.theMap.my_map._repr_html_()
 
