@@ -29,12 +29,13 @@
     </style>
 </head>
 <body>
-    <!-- Text Box Container -->
-    <div id="input-container">
-        <input type="text" id="user-input" placeholder="Enter zip code" minlength="5" required maxlength="5" required>
-        <button onclick="handleInput()">Submit</button>
-    </div>
-
+    <form method="post" action="/density"> <!-- Form submission (could be POST or GET on the server-side) -->
+        <!-- Text Box Container -->
+        <div id="input-container">
+            <input type="text" id="user-input" name = "zipcode" placeholder="Enter zip code" minlength="5" required maxlength="5" required>
+            <button onclick="handleInput()">Submit</button>
+        </div>
+    </form>
     <!-- Map Container -->
     <div id="map-container">
         {{ map_content|safe }}  <!-- Embed the map HTML here -->

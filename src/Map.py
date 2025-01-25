@@ -1,24 +1,31 @@
 import folium
 import webbrowser
 import json
+from Zip import ZipHelper
 
 class DensityMap:
     # The self is like the "this"; it refers to the instance making the call
     # The init part acts like a constructor
     # We declare all our members within the constructor, not outside
-    def __init__(self, center, zoom_start, fileName):
+    def __init__(self, center, zoom_start, fileName, zip_helper:ZipHelper):
         self.center = center
         self.zoom_start = zoom_start
         self.my_map = folium.Map(location=center, zoom_start=self.zoom_start)
         self.fileName = "templates/" + fileName + ".html"
+        self.marker_arr = []
+        self.zip_helper = zip_helper
 
-    def showMap(self):
+    def show_map(self):
         # Display the map
         self.markArea()
         #self.my_map.save(self.fileName)
         #webbrowser.open(self.fileName)
+    def reset_map(self):
+        print("CLEARED")
+        self.my_map = folium.Map(location=self.center, zoom_start=self.zoom_start) #reset the map
+        self.markArea() #mark the US again
 
-    def addMarker(self, x: float, y: float, popUpMessage: str):
+    def add_marker(self, x: float, y: float, popUpMessage: str):
         folium.Marker(
             location=[x, y],
             tooltip="Click me!",
@@ -26,11 +33,7 @@ class DensityMap:
             icon=folium.Icon(icon="cloud"),
             maxs_bounds=True
         ).add_to(self.my_map)
-        ''' attempted bounds
-        bounds = [[-168, -300], [168, 100]]
-        self.my_map.fit_bounds(bounds)
-        self.my_map.options = {"maxBounds": bounds,}  # Restrict panning beyond bounds
-        '''
+        
     def markArea(self):
         style = {'color':'grey', 
                 'weight':'1', 
@@ -38,15 +41,28 @@ class DensityMap:
                 'fillOpacity':.3}
         
         folium.GeoJson("res/us-states.json", name = "USA", style_function = lambda x: style).add_to(self.my_map)
-        '''
-        folium.Polygon([(17.611081, 32.528832), 
-                        (16.08094, 32.528832), 
-                        (16.08094, 33.505025), 
-                        (17.611081, 33.505025), 
-                        (17.611081, 32.528832)],
-                        color="red",
-                        weight=2,
-                        fill=True,
-                        fill_color="red",
-                        fill_opacity=1).add_to(self.my_map)
-        '''
+    def render_zip_code(self, zipcode:str):
+        #when rendering a zip code clear the previous area codes
+        self.reset_map()
+        zc = str(zipcode)
+        x = float(zc[0:2]) 
+        y = float(zc[2:4:])
+        print(zipcode)
+        print(x)
+        print(y)
+        number_of_vehicles = str(self.zip_helper.get_vechicle_num_from_zip(zipcode))
+        #doesnt work yet, just using as a place holder
+        marker = folium.Marker(
+            location=[x,y],
+            tooltip="Click me!",
+            popup=str(zipcode + ", " + number_of_vehicles),
+            icon=folium.Icon(icon="cloud"),
+            maxs_bounds=True
+        )
+
+        self.marker_arr.append(marker)
+        self.reset_map()
+        for markers in self.marker_arr:
+                markers.add_to(self.my_map)
+        self.my_map.fit_bounds(marker.location) 
+        
