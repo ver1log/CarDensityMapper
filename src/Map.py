@@ -47,12 +47,13 @@ class DensityMap:
         surface_area = self.zip_helper.get_surface_area(zipcode)
         city_name = self.zip_helper.get_city_name(zipcode)
         number_of_vehicles = str(self.zip_helper.get_vechicle_num_from_zip(zipcode))
+        marker_color = self.get_density_color(float(surface_area), int(number_of_vehicles))
         #doesnt work yet, just using as a place holder
         marker = folium.Marker(
             location=self.zip_helper.get_coodinates(int(zipcode)),
             tooltip="Click me!",
             popup= str(zipcode) + ", " + number_of_vehicles + ", " + str(surface_area) + ", " + city_name,
-            icon=folium.Icon(icon="cloud"),
+            icon=folium.Icon(icon="cloud", color = marker_color),
             maxs_bounds=True
         )
 
@@ -62,3 +63,28 @@ class DensityMap:
                 markers.add_to(self.my_map)
         self.my_map.fit_bounds(marker.location) 
         
+    def get_density_color(self, sqft, num_vehicles): ##-> str:
+        #national average for urban areas
+        # my goal is to get the most dense places so each zip code will be treated as urban       
+        # this will be my ranges
+        #    'darkred'
+        #    'lightred'
+        #    'orange'
+        #    'beige'
+
+        density_color = ''
+        car_density = num_vehicles/sqft
+        if car_density <= 1000:
+            print("Low Density (0-1,000 cars/sqmi)")
+            density_color ='beige'
+        elif car_density <= 2500:
+            print("Moderate Density (1,001-2,500 cars/sqmi)")
+            density_color ='orange'
+        elif car_density <= 5000:
+            print("High Density (2,501-5,000 cars/sqmi)") 
+            density_color ='lightred'
+        else:
+            print("Very High Density (5,001+ cars/sqmi)")
+            density_color = 'darkred'
+
+        return density_color
