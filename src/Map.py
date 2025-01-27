@@ -20,9 +20,9 @@ class DensityMap:
         self.markArea()
         #self.my_map.save(self.fileName)
         #webbrowser.open(self.fileName)
-    def reset_map(self):
+    def reset_map(self, marker_coords):
         print("CLEARED")
-        self.my_map = folium.Map(location=self.center, zoom_start=self.zoom_start) #reset the map
+        self.my_map = folium.Map(location=marker_coords, zoom_start=11) #reset the map
         self.markArea() #mark the US again
 
     def add_marker(self, x: float, y: float, popUpMessage: str):
@@ -40,29 +40,33 @@ class DensityMap:
                 'fillcolor':'black', 
                 'fillOpacity':.3}
         
-        folium.GeoJson("res/us-states.json", name = "USA", style_function = lambda x: style).add_to(self.my_map)
+        folium.GeoJson("res/californiaoutline.json", name = "USA", style_function = lambda x: style).add_to(self.my_map)
+
     def render_zip_code(self, zipcode:str):
         #when rendering a zip code clear the previous area codes
-        self.reset_map()
+        #self.reset_map()
         surface_area = self.zip_helper.get_surface_area(zipcode)
         city_name = self.zip_helper.get_city_name(zipcode)
         number_of_vehicles = str(self.zip_helper.get_vechicle_num_from_zip(zipcode))
         marker_color = self.get_density_color(float(surface_area), int(number_of_vehicles))
+        zip_coordinates = self.zip_helper.get_coodinates(int(zipcode))
+        zip_polygon_data = self.zip_helper.get_zip_border(str(zipcode))
         #doesnt work yet, just using as a place holder
         marker = folium.Marker(
-            location=self.zip_helper.get_coodinates(int(zipcode)),
+            location= zip_coordinates,
             tooltip="Click me!",
-            popup= str(zipcode) + ", " + number_of_vehicles + ", " + str(surface_area) + ", " + city_name,
+            popup= str(zipcode) + ", " + number_of_vehicles + ", " + str(surface_area) + "mi^2, " + city_name,
             icon=folium.Icon(icon="cloud", color = marker_color),
             maxs_bounds=True
         )
 
         self.marker_arr.append(marker)
-        self.reset_map()
+        self.reset_map(zip_coordinates)
         for markers in self.marker_arr:
                 markers.add_to(self.my_map)
-        self.my_map.fit_bounds(marker.location) 
-        
+        ##self.my_map.fit_bounds(marker.location) 
+        self.mark_zip_boundries(marker_color, str(zipcode), zip_polygon_data)
+
     def get_density_color(self, sqft, num_vehicles): ##-> str:
         #national average for urban areas
         # my goal is to get the most dense places so each zip code will be treated as urban       
@@ -88,3 +92,11 @@ class DensityMap:
             density_color = 'darkred'
 
         return density_color
+    
+    def mark_zip_boundries(self, color, zipcode, zip_polygon_data):
+        style = {'color':color, 
+                'weight':'1', 
+                'fillcolor':'black', 
+                'fillOpacity':.3}
+        if not zip_polygon_data == None: 
+            folium.GeoJson(zip_polygon_data, name = zipcode, style_function = lambda x: style).add_to(self.my_map)

@@ -1,13 +1,15 @@
 from Map import DensityMap
 from App import ApplicationX
 from ZipUtil import ZipHelper
+import json
+from topojson import Topology
 
 def main ():
     # Coordinates for the map's center
-    coords = [39, -98]
+    center_coords = [35, -98]
     # Constructor for the DensityMap object    
-    map1 = DensityMap(center=coords, zoom_start=4, fileName = "map_templates", zip_helper=ZipHelper())
-    map1.add_marker(39, -98, "Center")
+    map1 = DensityMap(center=center_coords, zoom_start=5, fileName = "map_templates", zip_helper=ZipHelper())
+    #map1.add_marker(39, -98, "Center")
     map1.show_map()
     app1 = ApplicationX(map1)
     #map1.showMap()
@@ -23,7 +25,7 @@ def main ():
     }
     
     '''
-
+ 
  
 if __name__ == '__main__':
     main()

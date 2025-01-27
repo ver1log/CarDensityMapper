@@ -2,6 +2,7 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 import os
+import json
 
 class ZipHelper:
     def __init__(self):
@@ -88,4 +89,15 @@ class ZipHelper:
         specific_city = city_name_list['titleCaseCityName']
         return specific_city
     
-            
+    def get_zip_border(self, zipcode):
+        with open('res/california_zipcode_borders.json', 'r') as file:
+        # Load the JSON data into a Python dictionary
+            data = json.load(file)
+
+        zip_polygon_data = None
+        for feature in data['features']:
+            if feature["id"] == zipcode: #the right feature json was found
+                zip_polygon_data = feature['geometry'] #extract the correct geometry of the json that we found
+
+        return zip_polygon_data
+    
