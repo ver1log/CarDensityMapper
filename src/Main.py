@@ -2,7 +2,6 @@ from Map import DensityMap
 from App import ApplicationX
 from ZipUtil import ZipHelper
 import json
-from topojson import Topology
 
 def main ():
     # Coordinates for the map's center
@@ -13,7 +12,8 @@ def main ():
     map1.show_map()
     app1 = ApplicationX(map1)
     #map1.showMap()
-    app1.startApplication()
+    app1.startApplicationAndDB()
+    #database = DensityTable(app1.db.Model)
     '''
     this is how I want entries in my db to be
     {

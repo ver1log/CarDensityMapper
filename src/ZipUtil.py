@@ -8,6 +8,7 @@ class ZipHelper:
     def __init__(self):
         self.all_vehicle_data = pd.read_csv("res/zipvehiclestats.csv")
         self.all_coordinate_data = pd.read_csv("res/latlondata.csv")
+        self.zctajson = json.load(open('res/california_zipcode_borders.json', 'r'))
         self.lat = []
         self.lng = []
         load_dotenv()
@@ -19,26 +20,24 @@ class ZipHelper:
     def is_valid_zip(self, zipcode:str) -> bool:
         all_vehicle_zip_codes = self.all_vehicle_data["ZIP Code"].to_list()
         zip_code_latlon = self.all_coordinate_data["ZIP"].to_list()
-        #debug stuff
-        print(type(all_vehicle_zip_codes[1]))
-        for i in range(0,10):
-            print(all_vehicle_zip_codes[i])
-        
+
         if zipcode not in all_vehicle_zip_codes or int(zipcode) not in zip_code_latlon:
             print("zip not in both csv")
             return False
         else:
-            print("zip in both csv")
+            if self.get_zip_border(zipcode) == 'null':
+                return False
+            print("zip in both csv and in boundries file")
             return True
         
     def get_coodinates(self, zipcode:int):
         zip_code_data = self.all_coordinate_data[self.all_coordinate_data["ZIP"] == zipcode]
-        print(self.all_coordinate_data.dtypes)
+        #print(self.all_coordinate_data.dtypes)
 
         self.lat = zip_code_data["LAT"].to_list()
         self.lon = zip_code_data["LNG"].to_list()
-        print(self.lat)
-        print(self.lon)
+        #print(self.lat)
+        #print(self.lon)
         return [self.lat[0], self.lon[0]]
     
     
@@ -55,7 +54,7 @@ class ZipHelper:
         #check the status code
         if response.status_code == 200:
             data = response.json()
-            print("Population data:", data)
+            #print("Population data:", data)
         else:
             print(f"Failed to fetch data: {response.status_code}, {response.text}")
         
@@ -77,7 +76,7 @@ class ZipHelper:
         #check the status code
         if response.status_code == 200:
             data = response.json()
-            print("Population data:", data)
+            #print("Population data:", data)
         else:
             print(f"Failed to fetch data: {response.status_code}, {response.text}")
         
@@ -90,14 +89,12 @@ class ZipHelper:
         return specific_city
     
     def get_zip_border(self, zipcode):
-        with open('res/california_zipcode_borders.json', 'r') as file:
-        # Load the JSON data into a Python dictionary
-            data = json.load(file)
-
+        data = self.zctajson
         zip_polygon_data = None
         for feature in data['features']:
             if feature["id"] == zipcode: #the right feature json was found
                 zip_polygon_data = feature['geometry'] #extract the correct geometry of the json that we found
-
-        return zip_polygon_data
+        data_string = json.dumps(zip_polygon_data)
+        #print(data_string)
+        return data_string
     
