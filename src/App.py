@@ -15,7 +15,7 @@ class ApplicationX:
         yourhostname = os.environ['hostname']
         yourdbname = os.environ['dbname']
 
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{yourusername}:{yourpassword}@{yourhostname}:5432/{yourdbname}'
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['URI']
         self.db = SQLAlchemy(self.app)
         migrate = Migrate(self.app, self.db)
         class DensityTable(self.db.Model):
