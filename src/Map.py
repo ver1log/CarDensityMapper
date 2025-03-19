@@ -2,6 +2,7 @@ import folium
 import webbrowser
 import json
 from src.ZipUtil import ZipHelper
+from src.Storage import fetch_json_from_supabase
 
 class DensityMap:
     # The self is like the "this"; it refers to the instance making the call
@@ -74,7 +75,7 @@ class DensityMap:
                 'fillcolor':'black', 
                 'fillOpacity':.3}
         
-        folium.GeoJson("res/californiaoutline.json", name = "USA", style_function = lambda x: style).add_to(self.my_map)
+        folium.GeoJson(fetch_json_from_supabase("california_zipcode_borders.json"), name = "USA", style_function = lambda x: style).add_to(self.my_map)
 
     def render_zip_code(self, zipcode:str)->bool:
         if self.zip_helper.is_valid_zip(zipcode) == False: #invalid zipcode

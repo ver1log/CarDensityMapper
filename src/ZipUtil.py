@@ -3,12 +3,19 @@ import requests
 from dotenv import load_dotenv
 import os
 import json
-
+from src.Storage import fetch_csv_from_supabase, fetch_json_from_supabase
 class ZipHelper:
     def __init__(self):
+        '''
         self.all_vehicle_data = pd.read_csv("res/zipvehiclestats.csv")
         self.all_coordinate_data = pd.read_csv("res/latlondata.csv")
         self.zctajson = json.load(open('res/california_zipcode_borders.json', 'r'))
+        '''
+        # Fetch data from Supabase Storage
+        self.all_vehicle_data = fetch_csv_from_supabase("zipvehiclestats.csv")
+        self.all_coordinate_data = fetch_csv_from_supabase("latlondata.csv")
+        self.zctajson = fetch_json_from_supabase("california_zipcode_borders.json")
+
         self.lat = []
         self.lng = []
         load_dotenv()

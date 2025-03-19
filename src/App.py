@@ -10,13 +10,16 @@ class ApplicationX:
         self.theMap = theMap
         self.app = Flask(__name__, template_folder='../templates')
 
-        yourusername = os.environ['username']
-        yourpassword = os.environ['password']
-        yourhostname = os.environ['hostname']
-        yourdbname = os.environ['dbname']
+        #yourusername = os.environ['username']
+        #yourpassword = os.environ['password']
+        #yourhostname = os.environ['hostname']
+        #yourdbname = os.environ['dbname']
 
         #self.app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['POSTGRES_URI']
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRES_URL')
+        DATABASE_URL = os.getenv('POSTGRES_URL_NON_POOLING')
+        if DATABASE_URL.startswith("postgres://"):
+            DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
         print("Database URI:", self.app.config['SQLALCHEMY_DATABASE_URI'])
 
         self.db = SQLAlchemy(self.app)
