@@ -1,7 +1,7 @@
 import folium
 import webbrowser
 import json
-from ZipUtil import ZipHelper
+from src.ZipUtil import ZipHelper
 
 class DensityMap:
     # The self is like the "this"; it refers to the instance making the call

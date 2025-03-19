@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from Map import DensityMap
+from src.Map import DensityMap
 from dotenv import load_dotenv
 import os
 from flask_sqlalchemy import SQLAlchemy
@@ -15,7 +15,10 @@ class ApplicationX:
         yourhostname = os.environ['hostname']
         yourdbname = os.environ['dbname']
 
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['URI']
+        #self.app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['POSTGRES_URI']
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('POSTGRES_URL')
+        print("Database URI:", self.app.config['SQLALCHEMY_DATABASE_URI'])
+
         self.db = SQLAlchemy(self.app)
         migrate = Migrate(self.app, self.db)
         class DensityTable(self.db.Model):
@@ -72,5 +75,5 @@ class ApplicationX:
         
         # Start the Flask app
         #self.app.run(debug=True)
-        self.app.run(host='0.0.0.0', port=8000)
+        #self.app.run(host='0.0.0.0', port=8000)
 
