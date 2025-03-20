@@ -75,7 +75,7 @@ class DensityMap:
                 'fillcolor':'black', 
                 'fillOpacity':.3}
         
-        folium.GeoJson(fetch_json_from_supabase("california_zipcode_borders.json"), name = "USA", style_function = lambda x: style).add_to(self.my_map)
+        folium.GeoJson(fetch_json_from_supabase("californiaoutline.json"), name = "USA", style_function = lambda x: style).add_to(self.my_map)
 
     def render_zip_code(self, zipcode:str)->bool:
         if self.zip_helper.is_valid_zip(zipcode) == False: #invalid zipcode
