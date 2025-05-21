@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from src.Map import DensityMap
+from Map import DensityMap
 from dotenv import load_dotenv
 import os
 from flask_sqlalchemy import SQLAlchemy
@@ -10,12 +10,6 @@ class ApplicationX:
         self.theMap = theMap
         self.app = Flask(__name__, template_folder='../templates')
 
-        #yourusername = os.environ['username']
-        #yourpassword = os.environ['password']
-        #yourhostname = os.environ['hostname']
-        #yourdbname = os.environ['dbname']
-
-        #self.app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['POSTGRES_URI']
         DATABASE_URL = os.getenv('POSTGRES_URL_NON_POOLING')
         if DATABASE_URL.startswith("postgres://"):
             DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
