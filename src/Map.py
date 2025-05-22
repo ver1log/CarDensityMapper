@@ -1,8 +1,8 @@
 import folium
 import webbrowser
 import json
-from ZipUtil import ZipHelper
-from Storage import fetch_json_from_supabase
+from src.ZipUtil import ZipHelper
+from src.Storage import fetch_json_from_supabase
 
 class DensityMap:
     # The self is like the "this"; it refers to the instance making the call

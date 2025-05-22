@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from Map import DensityMap
+from src.Map import DensityMap
 from dotenv import load_dotenv
 import os
 from flask_sqlalchemy import SQLAlchemy
