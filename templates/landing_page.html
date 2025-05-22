@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('https://images.unsplash.com/photo-1725205088273-bae6be2da828?q=80&w=1931?auto=format&fit=crop') no-repeat center center fixed;
+      background-size: cover;
+      font-family: sans-serif;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .overlay h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: #222;
+    }
+
+    .overlay p {
+      font-size: 1rem;
+      color: #444;
+      line-height: 1.5;
+    }
+
+    .arrow {
+      display: inline-block;
+      margin-top: 2rem;
+      cursor: pointer;
+      font-size: 2rem;
+      color: #333;
+      transition: transform 0.2s;
+    }
+
+    .arrow:hover {
+      transform: translateY(5px);
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <h1>Welcome to the vehicle density map!</h1>
+    <p>
+      Our interactive heatmap application lets you explore detailed vehicle data by zip code. 
+      Simply enter a location to visualize real-time insights across multiple areas, including 
+      vehicle density, city, and other relevant statistics. Whether you're researching for 
+      business or personal interest, our tool delivers accurate, location-specific data in a 
+      clear and engaging format.
+    </p>
+    <div class="arrow" onclick="goToDensity()">→</div>
+  </div>
+
+  <script>
+    function goToDensity() {
+      window.location.href = '/density?from=landing';
+    }
+  </script>
+</body>
+</html>

@@ -37,36 +37,37 @@ class ApplicationX:
         
         @self.app.route('/')
         def index():
-            # Generate the HTML for the map
-            map_content = self.theMap.my_map._repr_html_()  # Converts the map to an HTML string
-            # Pass the HTML to the template
+            landing_page_file = "landing_page.html"
             # Use only the file name without the "templates/" path, split at the / and get the last element of the list(filename)
-            return render_template(self.theMap.fileName.split('/')[-1], map_content=map_content)
+            return render_template(landing_page_file)
         
 
-        #if zip code is not already in the database, check somehow
-        @self.app.route("/density", methods=["GET", "POST"])
+        #the only time the GET method will be invoked is when we are routing a user, POST will be doing the work
+        @self.app.route("/density", methods=["POST","GET"])
         def density():
-            # Determine how the ZIP code is submitted (POST or GET)
+            # Retrieve the zipcode via form post request
             if request.method == "POST":
                 zipcode = request.form.get("zipcode")
-            else:  # GET method
-                zipcode = request.args.get("zipcode")
+            elif request.method == "GET":
+                from_landing = request.args.get('from')
+                if from_landing == 'landing':
+                    print('User came from landing page')
+                    map_content = self.theMap.my_map._repr_html_()
+                    return render_template(self.theMap.fileName.split('/')[-1], map_content=map_content)
 
             # Validate whether the submission was valid
             if not zipcode or not zipcode.isdigit() or len(zipcode) != 5:
+                print(zipcode)
                 return "Invalid ZIP code", 400
 
             # Check if ZIP code exists in the database
-            # Assuming `self.database` is a dictionary or similar
-            
             if(self.theMap.render_zip_code(zipcode) == False):
                 return "Zipcode not available", 400
             else:# Render the ZIP code density on the map, since it has been checked that it is valid at this point
                 self.theMap.render_zip_code(zipcode)
+                # Generate the HTML for the map
                 map_content = self.theMap.my_map._repr_html_()
-
-                # Render the updated map
+                #Pass the HTML to the template, and render the updated map
                 return render_template(self.theMap.fileName.split('/')[-1], map_content=map_content)
             
         
