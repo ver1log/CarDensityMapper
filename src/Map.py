@@ -52,8 +52,7 @@ class DensityMap:
     def show_map(self):
         # Display the map
         self.markArea()
-        #self.my_map.save(self.fileName)
-        #webbrowser.open(self.fileName)
+
     def reset_zoom_position(self, marker_coords):
         #print("CLEARED")
         self.my_map = folium.Map(location=marker_coords, zoom_start=11) #reset the map
@@ -120,13 +119,16 @@ class DensityMap:
                         #self.mark_zip_boundries(marker_color, str(zipcode), zip_polygon_data)
                         self.marker_arr.append(marker) 
                         self.boundries_mapping[a_zipcode] = [marker_color,zip_polygon_data]
-            self.reset_zoom_position(zoom_back_coords)              
+            self.reset_zoom_position(zoom_back_coords) 
+            print("ZOOMING INTO ZIP");             
             for markers in self.marker_arr:
                     markers.add_to(self.my_map)
             for key in self.boundries_mapping:
                 self.mark_zip_boundries(self.boundries_mapping[key][0],key,self.boundries_mapping[key][1])
                 print(f'zipcode:{key}, color:{self.boundries_mapping[key][0]}')
             ##self.my_map.fit_bounds(marker.location) 
+            print("INSIDE mapping func")
+            print(self.zalid_passed_zipcodes)
             return True
 
     def get_density_color(self, sqft, num_vehicles): ##-> str:
@@ -162,3 +164,14 @@ class DensityMap:
                 'fillOpacity':.3}
         if not zip_polygon_data == None: 
             folium.GeoJson(zip_polygon_data, name = zipcode, style_function = lambda x: style).add_to(self.my_map)
+
+    def clear_map(self):
+        self.my_map = folium.Map(location=self.center, zoom_start=self.zoom_start) 
+        self.marker_arr = []
+        print(self.marker_arr)
+        self.boundries_mapping = {}
+        print(self.boundries_mapping)
+        print(self.zalid_passed_zipcodes)
+        self.zalid_passed_zipcodes = []
+        self.markArea()
+        

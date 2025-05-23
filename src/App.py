@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from src.models.Density import define_density_table
 
 class ApplicationX:
     def __init__(self,theMap:DensityMap):
@@ -18,17 +19,8 @@ class ApplicationX:
 
         self.db = SQLAlchemy(self.app)
         migrate = Migrate(self.app, self.db)
-        class DensityTable(self.db.Model):
-            zipcode = self.db.Column(self.db.Integer, primary_key=True)
-            x = self.db.Column(self.db.Float)
-            y = self.db.Column(self.db.Float)
-            area = self.db.Column(self.db.Float)
-            number_of_vehicles = self.db.Column(self.db.Integer)
-            color = self.db.Column(self.db.String(20))
-            city_name = self.db.Column(self.db.String(20))
-            jsonboundries = self.db.Column(self.db.String)
         
-        self.DensityTable = DensityTable  # Store the model class
+        self.DensityTable = define_density_table(self.db) # Store the model class
         self.theMap.set_database(self.db, self.DensityTable) #pass in DB stuff so Map.py can work with it
     
     def startApplicationAndDB(self):
@@ -41,19 +33,15 @@ class ApplicationX:
             # Use only the file name without the "templates/" path, split at the / and get the last element of the list(filename)
             return render_template(landing_page_file)
         
-
-        #the only time the GET method will be invoked is when we are routing a user, POST will be doing the work
-        @self.app.route("/density", methods=["POST","GET"])
-        def density():
+        #main route for displaying densities
+        @self.app.route("/density", methods=["POST"])
+        def show_density():
             # Retrieve the zipcode via form post request
-            if request.method == "POST":
-                zipcode = request.form.get("zipcode")
-            elif request.method == "GET":
-                from_landing = request.args.get('from')
-                if from_landing == 'landing':
-                    print('User came from landing page')
-                    map_content = self.theMap.my_map._repr_html_()
-                    return render_template(self.theMap.fileName.split('/')[-1], map_content=map_content)
+            print("INSIDE POST!!!!!");
+            print("Raw data:", request.data)
+            request_json = request.get_json()
+            zipcode = request_json.get("zipcode")
+            print(f"Received ZIP: {zipcode}")
 
             # Validate whether the submission was valid
             if not zipcode or not zipcode.isdigit() or len(zipcode) != 5:
@@ -68,10 +56,25 @@ class ApplicationX:
                 # Generate the HTML for the map
                 map_content = self.theMap.my_map._repr_html_()
                 #Pass the HTML to the template, and render the updated map
-                return render_template(self.theMap.fileName.split('/')[-1], map_content=map_content)
-            
+                print("RENDERED ZIPCODE");
+                #return render_template(self.theMap.fileName.split('/')[-1], map_content=map_content)
+                return map_content
         
-        # Start the Flask app
-        #self.app.run(debug=True)
-        #self.app.run(host='0.0.0.0', port=8000)
+        @self.app.route("/density", methods=["GET"])
+        def goto_map():
+            from_landing = request.args.get('from')
+            if from_landing == 'landing':
+                print('User came from landing page')
+                #self.theMap.clear_map()
+                self.theMap.clear_map()
+                map_content = self.theMap.my_map._repr_html_()
+                return render_template(self.theMap.fileName.split('/')[-1], map_content=map_content)
 
+        #this will be my route that i use to clear the screen and send the user back to the default map 
+        @self.app.route("/density", methods=["DELETE"])
+        def clear():
+            print("inside clear");
+            self.theMap.clear_map()
+            map_content = self.theMap.my_map._repr_html_()
+            #I am returning the map content since the DELETE route does not render the new page, that will be done on the client side
+            return map_content

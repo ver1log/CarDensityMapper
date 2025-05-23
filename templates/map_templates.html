@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Interactive Map</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
         #map-container { position: relative; width: 100%; height: 100%; }
-        #input-container {
+        .input-container {
             position: absolute;
             top: 10px;
             left: 10px;
@@ -21,11 +22,7 @@
             padding: 5px;
             font-size: 14px;
         }
-        button {
-            padding: 5px 10px;
-            font-size: 14px;
-            cursor: pointer;
-        }
+        
         /* Legend Container Style */
         #legend-container {
             position: absolute;
@@ -50,16 +47,26 @@
             margin-right: 10px;
             border-radius: 3px;
         }
+
+        .rect {
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .square {
+            padding: 5px 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <form method="post" action="/density"> <!-- Form submission (could be POST or GET on the server-side) -->
-        <!-- Text Box Container -->
-        <div id="input-container">
-            <input type="text" id="user-input" name = "zipcode" placeholder="Enter zip code" minlength="5" required maxlength="5" required>
-            <button onclick="handleInput()">Submit</button>
-        </div>
-    </form>
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Enter zip code" minlength="5" maxlength="5" required>
+        <button class="rect" type = "button" onclick="handleInput()">Submit</button>
+        <button class="square" type = "button" onclick="clickClear()"><i class="fa-solid fa-trash"></i></button>
+    </div>
 
       <!-- Legend -->
       <div id="legend-container">
@@ -88,9 +95,28 @@
 
     <script>
         // Handle user input
-        function handleInput() {
-            const inputValue = document.getElementById('user-input').value;
-            alert('You entered: ' + inputValue);
+        function handleInput(){
+            const zipcode = document.getElementById('user-input').value;
+            fetch('/density', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({zipcode:zipcode})
+            }).then(response => response.text())
+            .then(mapHtml => {
+            // Replace the content inside the #map-container with new map HTML
+            document.getElementById('map-container').innerHTML = mapHtml;
+            }).catch(error => {console.error('Error clearing map:', error);
+            });
+        }
+
+        function clickClear() {
+            fetch('/density', { method: 'DELETE' })
+            .then(response => response.text())
+            .then(mapHtml => {
+            // Replace the content inside the #map-container with new map HTML
+            document.getElementById('map-container').innerHTML = mapHtml;
+            }).catch(error => {console.error('Error clearing map:', error);
+            });
         }
     </script>
 </body>
