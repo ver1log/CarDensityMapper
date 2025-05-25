@@ -3,7 +3,7 @@ import requests
 from dotenv import load_dotenv
 import os
 import json
-from src.Storage import fetch_csv_from_supabase, fetch_json_from_supabase
+from src.supa_storage import fetch_csv_from_supabase, fetch_json_from_supabase
 class ZipHelper:
     def __init__(self):
         '''

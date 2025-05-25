@@ -1,6 +1,6 @@
-from src.Map import DensityMap
-from src.App import ApplicationX
-from src.ZipUtil import ZipHelper
+from src.map import DensityMap
+from src.app import ApplicationX
+from src.zip_util import ZipHelper
 import json
 '''
 def main ():

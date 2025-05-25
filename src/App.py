@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request
-from src.Map import DensityMap
+from src.map import DensityMap
 from dotenv import load_dotenv
 import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from src.models.Density import define_density_table
+from src.models.density import define_density_table
 
 class ApplicationX:
     def __init__(self,theMap:DensityMap):
